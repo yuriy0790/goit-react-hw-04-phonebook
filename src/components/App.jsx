@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useEffect, useState } from 'react';
 import Notiflix from 'notiflix';
 import { GlobalStyleComponent } from 'styles/GlobalStyles';
 import AddContactForm from './AddContactForm/AddContactForm';
@@ -8,38 +8,38 @@ import Section from './Section/Section';
 import Notification from './Notification/Notification';
 import { Container } from './Container/Container.styled';
 
-export default class App extends Component {
-  state = {
-    contacts: [
-      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ],
-    filter: '',
-  };
+export default function App() {
+  const [contacts, setContacts] = useState(
+    JSON.parse(window.localStorage.getItem('contacts')) ?? ''
+  );
 
-  countTotalContacts = () => {
-    const { contacts } = this.state;
+  const [filter, setFilter] = useState(
+    JSON.parse(window.localStorage.getItem('filter')) ?? ''
+  );
+
+  useEffect(() => {
+    window.localStorage.setItem('contacts', JSON.stringify(contacts));
+  }, [contacts]);
+
+  useEffect(() => {
+    window.localStorage.setItem('filter', JSON.stringify(filter));
+  }, [filter]);
+
+  const countTotalContacts = () => {
     return contacts.length;
   };
 
-  deleteContact = contactId => {
-    const { contacts } = this.state;
-
+  const deleteContact = contactId => {
     for (const contact of contacts) {
       if (contact.id === contactId) {
         Notiflix.Notify.success(`"${contact.name}" successfully deleted`);
       }
     }
 
-    this.setState(prevState => ({
-      contacts: prevState.contacts.filter(el => el.id !== contactId),
-    }));
+    setContacts(contacts.filter(el => el.id !== contactId));
   };
 
-  formSubmitHandler = data => {
-    const { contacts } = this.state;
+  const formSubmitHandler = data => {
     const { name, number } = data;
 
     const existingName = contacts.find(
@@ -66,58 +66,39 @@ export default class App extends Component {
       number: data.number,
     };
 
-    this.setState(prevState => ({
-      contacts: [contact, ...prevState.contacts],
-    }));
+    setContacts([contact, ...contacts]);
+
     Notiflix.Notify.success(
       `"${contact.name}" successfully added to contact list`
     );
   };
 
-  changeFilter = event => {
-    this.setState({ filter: event.currentTarget.value });
+  const changeFilter = event => {
+    setFilter(event.currentTarget.value);
   };
 
-  componentDidMount() {
-    const localContacts = JSON.parse(localStorage.getItem('contacts'));
+  const normalizedFilter = filter.toLowerCase();
+  const filteredContacts = contacts.filter(contact =>
+    contact.name.toLowerCase().includes(normalizedFilter)
+  );
+  return (
+    <Container>
+      <Section title="Phonebook">
+        <AddContactForm onSubmit={formSubmitHandler} />
+        <ContactFilter filter={filter} onChange={changeFilter} />
+      </Section>
+      <Section title="Contacts">
+        {countTotalContacts() ? (
+          <ContactList
+            contacts={filteredContacts}
+            onDeleteContact={deleteContact}
+          />
+        ) : (
+          <Notification message="There is no contacts" />
+        )}
+      </Section>
 
-    if (localContacts) {
-      this.setState({ contacts: localContacts });
-    }
-  }
-
-  componentDidUpdate(_, prevState) {
-    if (this.state.contacts !== prevState.contacts) {
-      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
-    }
-  }
-
-  render() {
-    const { contacts, filter } = this.state;
-    const normalizedFilter = filter.toLowerCase();
-    const filteredContacts = contacts.filter(contact =>
-      contact.name.toLowerCase().includes(normalizedFilter)
-    );
-
-    return (
-      <Container>
-        <Section title="Phonebook">
-          <AddContactForm onSubmit={this.formSubmitHandler} />
-          <ContactFilter filter={filter} onChange={this.changeFilter} />
-        </Section>
-        <Section title="Contacts">
-          {this.countTotalContacts() ? (
-            <ContactList
-              contacts={filteredContacts}
-              onDeleteContact={this.deleteContact}
-            />
-          ) : (
-            <Notification message="There is no contacts" />
-          )}
-        </Section>
-
-        <GlobalStyleComponent />
-      </Container>
-    );
-  }
+      <GlobalStyleComponent />
+    </Container>
+  );
 }
