@@ -1,0 +1,17 @@
+.input {
+  max-width: 250px;
+  min-width: 100px;
+  padding: 5px 5px;
+  margin: 5px 10px;
+  border: 1px solid white;
+  border-radius: 10px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.label {
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+}

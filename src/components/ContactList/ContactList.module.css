@@ -1,0 +1,41 @@
+.contact {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: white;
+  flex-basis: 33%;
+}
+
+.delBtn {
+  text-decoration: none;
+
+  color: white;
+  padding: 3px 6px;
+  margin: 5px 5px;
+  border: 1px solid white;
+  border-radius: 5px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  background-image: linear-gradient(
+    to right,
+    #eda1eb 0%,
+    #9030f0 51%,
+    #9d3de1 100%
+  );
+  background-size: 200% auto;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  transition: 0.5s;
+}
+.delBtn:hover {
+  background-position: right center;
+}
+
+.listItem {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 5px;
+  justify-content: space-between;
+}
