@@ -35,8 +35,9 @@ export default function App() {
         Notiflix.Notify.success(`"${contact.name}" successfully deleted`);
       }
     }
-
-    setContacts(contacts.filter(el => el.id !== contactId));
+    // setContacts(contacts.filter(el => el.id !== contactId));
+    //як правильно?  в чому буде різниця?
+    setContacts(contacts => contacts.filter(el => el.id !== contactId));
   };
 
   const formSubmitHandler = data => {
@@ -66,7 +67,9 @@ export default function App() {
       number: data.number,
     };
 
-    setContacts([contact, ...contacts]);
+    // setContacts([contact, ...contacts]);
+    //як правильно?  в чому буде різниця?
+    setContacts(contacts => [contact, ...contacts]);
 
     Notiflix.Notify.success(
       `"${contact.name}" successfully added to contact list`
