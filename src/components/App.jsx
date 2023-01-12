@@ -14,29 +14,26 @@ export default function App() {
   );
 
   const [filter, setFilter] = useState(
-    JSON.parse(window.localStorage.getItem('filter')) ?? ''
+    // JSON.parse(window.localStorage.getItem('filter')) ??
+    ''
   );
 
   useEffect(() => {
     window.localStorage.setItem('contacts', JSON.stringify(contacts));
   }, [contacts]);
 
-  useEffect(() => {
-    window.localStorage.setItem('filter', JSON.stringify(filter));
-  }, [filter]);
+  // useEffect(() => {
+  //   window.localStorage.setItem('filter', JSON.stringify(filter));
+  // }, [filter]);
 
   const countTotalContacts = () => {
     return contacts.length;
   };
 
   const deleteContact = contactId => {
-    for (const contact of contacts) {
-      if (contact.id === contactId) {
-        Notiflix.Notify.success(`"${contact.name}" successfully deleted`);
-      }
-    }
-    // setContacts(contacts.filter(el => el.id !== contactId));
-    //як правильно?  в чому буде різниця?
+    const deletedContact = contacts.find(contact => contact.id === contactId);
+    Notiflix.Notify.success(`"${deletedContact.name}" successfully deleted`);
+
     setContacts(contacts => contacts.filter(el => el.id !== contactId));
   };
 
@@ -67,8 +64,6 @@ export default function App() {
       number: data.number,
     };
 
-    // setContacts([contact, ...contacts]);
-    //як правильно?  в чому буде різниця?
     setContacts(contacts => [contact, ...contacts]);
 
     Notiflix.Notify.success(
